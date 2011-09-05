@@ -2,6 +2,12 @@
 
 Wrapper for the Amazon AWS SDK for Java.
 
+## Installing
+
+A snapshot release is published on Clojars. It can be added to your Leiningen `project.clj` as:
+
+		[clj-aws "0.0.1-SNAPSHOT"]
+
 ## Supported APIs
 
 This library is very much a work in progress. The following Amazon API's are currently supported:
