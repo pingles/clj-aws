@@ -1,4 +1,6 @@
-(ns clj-aws.ses
+(ns ^{:author "Paul Ingles"
+      :doc "Consumer code for Amazon's Simple Email Service"}
+  clj-aws.ses
   (:import [com.amazonaws.services.simpleemail AmazonSimpleEmailServiceClient]
            [com.amazonaws.services.simpleemail.model Body Content Message Destination SendEmailRequest]))
 
