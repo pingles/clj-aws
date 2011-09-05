@@ -7,6 +7,7 @@ Wrapper for the Amazon AWS SDK for Java.
 This library is very much a work in progress. The following Amazon API's are currently supported:
 
 * Amazon Simple Email Service
+* Amazon Simple Notification Service
 
 ## Usage
 
@@ -24,6 +25,42 @@ Create your credentials using the `credentials` function:
 		(def sender "sender@origin.com")
 		
 		(clj-aws.ses/send-email client sender destination message)
+
+### Simple Notification Service
+
+Firstly, create a client with your AWS credentials
+
+		(def client (clj-aws.sns/client creds))
+
+Next, it's necessary to define the topic for the set of notifications you would like to issue. 
+
+		(create-topic client "some_topic")
+
+You can use `list-topics` to see all currently created topics (and their ARN).
+
+Once you've defined a topic you can create a subscription to that topic. The library allows subscriptions to be defined with the following functions:
+
+* `http-subscription`
+* `email-subscription`
+* `sqs-subscription`
+
+All subscriptions are tied to a topic's ARN. This can be found by calling `list-topics`:
+
+		(.getTopicArn (first (list-topics client)))
+		;; "arn:aws:sns:us-east-1:121xxx:some_topic"
+
+Then, subscriptions can be bound as follows:
+
+		(subscribe client arn (http-subscription "https://my.site/testing"))
+
+and an email subscription:
+
+		(subscribe client arn (email-subscription "recipient@email.com"))
+
+Notifications can then be posted as follows:
+
+		(def topic-arn "arn:aws:sns:us-east-1:121xxx:some_topic")
+		(publish client topic-arn "Test message!!")
 
 ## License
 
