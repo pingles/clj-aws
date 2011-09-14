@@ -4,10 +4,17 @@
   (:import [com.amazonaws.services.sqs AmazonSQSClient]
            [com.amazonaws.services.sqs.model CreateQueueRequest DeleteQueueRequest SendMessageRequest ReceiveMessageRequest]))
 
+(def endpoints {:us-east "sqs.us-east-1.amazonaws.com"
+                :us-west "sqs.us-west-1.amazonaws.com"
+                :eu-west "sqs.eu-west-1.amazonaws.com"
+                :ap-south "sqs.ap-southeast-1.amazonaws.com"
+                :ap-north "sqs.ap-northeast-1.amazonaws.com"})
+
 (defn client
   "Creates the SQS client"
-  [credentials]
-  (AmazonSQSClient. credentials))
+  [credentials & {:keys [region] :or {region :us-east}}]
+  (doto (AmazonSQSClient. credentials)
+    (.setEndpoint (region endpoints))))
 
 (defn list-queues
   "Lists the URLs of all available queues"
