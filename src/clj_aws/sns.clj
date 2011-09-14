@@ -2,12 +2,19 @@
       :description "Interface to Amazon's Simple Notification Service"}
   clj-aws.sns
   (:import [com.amazonaws.services.sns AmazonSNSClient]
-           [com.amazonaws.services.sns.model Topic CreateTopicRequest GetTopicAttributesRequest SubscribeRequest PublishRequest]
+           [com.amazonaws.services.sns.model Topic CreateTopicRequest DeleteTopicRequest GetTopicAttributesRequest SubscribeRequest PublishRequest]
            [java.net URL]))
 
+(def endpoints {:us-east "sns.us-east-1.amazonaws.com"
+                :us-west "sns.us-west-1.amazonaws.com"
+                :eu-west "sns.eu-west-1.amazonaws.com"
+                :ap-south "sns.ap-southeast-1.amazonaws.com"
+                :ap-north "sns.ap-northeast-1.amazonaws.com"})
+
 (defn client
-  [credentials]
-  (AmazonSNSClient. credentials))
+  [credentials & {:keys [region] :or {region :us-east}}]
+  (doto (AmazonSNSClient. credentials)
+    (.setEndpoint (region endpoints))))
 
 (defn list-topics
   "Lists all current topics"
@@ -25,6 +32,10 @@
   "Creates a topic named topic and returns the ARN"
   [client topic]
   (.createTopic client (CreateTopicRequest. topic)))
+
+(defn delete-topic
+  [client topic-arn]
+  (.deleteTopic client (DeleteTopicRequest. topic-arn)))
 
 (defn list-subscriptions
   [client]
